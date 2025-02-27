@@ -1,6 +1,7 @@
-using App.Repositories;
+
 using App.Repositories.Extensions;
-using Microsoft.EntityFrameworkCore;
+using App.Services.Extensions;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,12 +14,25 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-builder.Services.AddRepositories(builder.Configuration);
+builder.Services.AddRepositories(builder.Configuration).AddServices(builder.Configuration);
 
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("AllowAll",
+		policy =>
+		{
+			policy.WithOrigins("https://desktop.postman.com") // Postman'in masaüstü sürümüne izin ver
+				  .AllowAnyMethod()
+				  .AllowAnyHeader()
+				  .AllowCredentials();
+		});
+});
 
 
 
 var app = builder.Build();
+
+app.UseCors("AllowAll");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
