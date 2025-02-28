@@ -1,7 +1,8 @@
 ﻿using App.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-
+using System.Net;
 namespace App.API.Controllers
 {
     [Route("api/[controller]")]
@@ -11,23 +12,22 @@ namespace App.API.Controllers
 		[NonAction] // endpoint olarak algılamaması için
         public IActionResult CreateActionResult<T>(ServiceResult<T> result) // generic metot
 		{
-			if (result.Status == System.Net.HttpStatusCode.NoContent)
+			return result.Status switch
 			{
-				return new ObjectResult(null) { StatusCode = result.Status.GetHashCode() };
-			}
-
-			return new ObjectResult(result) { StatusCode = result.Status.GetHashCode() };
+				HttpStatusCode.NoContent => NoContent(),
+				HttpStatusCode.Created => Created(result.UrlAsCreated, result.Data),
+				_ => new ObjectResult(result) { StatusCode = result.Status.GetHashCode() }
+			};
 
 		}
 		[NonAction]
 		public IActionResult CreateActionResult(ServiceResult result)  // generic olmayan metot
 		{
-			if (result.Status == System.Net.HttpStatusCode.NoContent)
+			return result.Status switch
 			{
-				return new ObjectResult(null) { StatusCode = result.Status.GetHashCode() };
-			}
-
-			return new ObjectResult(result) { StatusCode = result.Status.GetHashCode() };
+				HttpStatusCode.NoContent => new ObjectResult(null) { StatusCode = result.Status.GetHashCode() },
+				_ => new ObjectResult(result) { StatusCode = result.Status.GetHashCode() }
+			};
 
 		}
 	}
