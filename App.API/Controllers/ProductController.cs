@@ -1,5 +1,7 @@
 ﻿using App.Services;
 using App.Services.Products;
+using App.Services.Products.Create;
+using App.Services.Products.Update;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
