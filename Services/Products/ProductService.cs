@@ -1,10 +1,12 @@
 ﻿using App.Repositories;
 using App.Repositories.Products;
+using App.Services.ExceptionHandlers;
 using App.Services.Products.Create;
 using App.Services.Products.Update;
 using AutoMapper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using System.Net;
 
 
@@ -48,6 +50,9 @@ namespace App.Services.Products
 
         public async Task<ServiceResult<CreateProductResponse>> CreateAsync(CreateProductRequest request)
         {
+
+            throw new CriticalException("kritikseviye bir hata olştu");
+
             var anyProduct = await productRepository.Where(x => x.Name == request.Name).AnyAsync();
 
             if (anyProduct)

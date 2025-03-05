@@ -40,6 +40,8 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+app.UseExceptionHandler(x => { });
+
 app.UseCors("AllowAll");
 
 // Configure the HTTP request pipeline.
