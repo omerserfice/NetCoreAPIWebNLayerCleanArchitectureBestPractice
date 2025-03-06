@@ -3,6 +3,7 @@ using App.Repositories.Products;
 using App.Services.ExceptionHandlers;
 using App.Services.Products.Create;
 using App.Services.Products.Update;
+using App.Services.Products.UpdateStock;
 using AutoMapper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -26,9 +27,10 @@ namespace App.Services.Products
         {
             var products = await productRepository.GetTopPriceProductAsync(count);
 
-            var productsAsDto = products.Select(p => new ProductDto(p.Id, p.Name, p.Price, p.Stock)).ToList();
+            var productsAsDto = mapper.Map<List<ProductDto>>(products);
 
-            return new ServiceResult<List<ProductDto>>()
+
+			return new ServiceResult<List<ProductDto>>()
             {
                 Data = productsAsDto
             };
@@ -51,7 +53,7 @@ namespace App.Services.Products
         public async Task<ServiceResult<CreateProductResponse>> CreateAsync(CreateProductRequest request)
         {
 
-            throw new CriticalException("kritikseviye bir hata olştu");
+            
 
             var anyProduct = await productRepository.Where(x => x.Name == request.Name).AnyAsync();
 
@@ -60,12 +62,7 @@ namespace App.Services.Products
                 return ServiceResult<CreateProductResponse>.Fail("Ürün ismi veritabanında bulunmaktadır.", HttpStatusCode.BadRequest);
             }
 
-            var product = new Product()
-            {
-                Name = request.Name,
-                Price = request.Price,
-                Stock = request.Stock
-            };
+            var product = mapper.Map<Product>(request);
 
             await productRepository.AddAsync(product);
             await unitOfWork.SaveChangesAsync();
@@ -85,9 +82,19 @@ namespace App.Services.Products
                 return ServiceResult.Fail("Product not found", HttpStatusCode.NotFound);
 			}
 
-            product.Name = request.Name;
-            product.Price = request.Price;
-            product.Stock = request.Stock;
+			var isProductNameExist = await productRepository.Where(x => x.Name == request.Name && x.Id != product.Id).AnyAsync();
+
+			if (isProductNameExist)
+			{
+				return ServiceResult.Fail("Ürün ismi veritabanında bulunmaktadır.", HttpStatusCode.BadRequest);
+			}
+
+			//product.Name = request.Name;
+   //         product.Price = request.Price;
+   //         product.Stock = request.Stock;
+
+
+            product = mapper.Map(request, product);
 
             productRepository.Update(product);
             await unitOfWork.SaveChangesAsync();
