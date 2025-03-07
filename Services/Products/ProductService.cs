@@ -53,8 +53,6 @@ namespace App.Services.Products
         public async Task<ServiceResult<CreateProductResponse>> CreateAsync(CreateProductRequest request)
         {
 
-            
-
             var anyProduct = await productRepository.Where(x => x.Name == request.Name).AnyAsync();
 
             if (anyProduct)
@@ -86,7 +84,7 @@ namespace App.Services.Products
 
 			if (isProductNameExist)
 			{
-				return ServiceResult.Fail("Ürün ismi veritabanında bulunmaktadır.", HttpStatusCode.BadRequest);
+				return ServiceResult.Fail( "güncellenecek ürün bulunamadı.", HttpStatusCode.BadRequest);
 			}
 
 			//product.Name = request.Name;
