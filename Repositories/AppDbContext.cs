@@ -18,5 +18,7 @@ namespace App.Repositories
 			base.OnModelCreating(modelBuilder);
 		}
 
+		
+
 	}
 }
