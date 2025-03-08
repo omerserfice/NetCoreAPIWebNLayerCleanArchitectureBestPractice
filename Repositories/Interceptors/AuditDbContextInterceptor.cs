@@ -37,6 +37,7 @@ namespace App.Repositories.Interceptors
 
 				if (entityEntry.Entity is not IAuditEntity auditEntity) continue;
 
+				if (!Behaviors.ContainsKey(entityEntry.State)) continue;
 
 				Behaviors[entityEntry.State](eventData.Context, auditEntity);
 
