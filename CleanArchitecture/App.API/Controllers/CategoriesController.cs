@@ -5,18 +5,25 @@ using App.Application.Features.Categories.Update;
 using App.Domain.Entities;
 using CleanApp.API.Filters;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace CleanApp.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoriesController(ICategoryService categoryService) : CustomBaseController
+    public class CategoriesController(ICategoryService categoryService,IMemoryCache memoryCache) : CustomBaseController
     {
         [HttpGet]
         public async Task<IActionResult> GetCategories() => CreateActionResult(await categoryService.GetAllListAsync());
 
         [HttpGet("{id}")]
-		public async Task<IActionResult> GetCategory(int id) => CreateActionResult(await categoryService.GetByIdAsync(id));
+		public async Task<IActionResult> GetCategory(int id)
+		{
+
+
+			return CreateActionResult(await categoryService.GetByIdAsync(id)); 
+		}
+	
 
 		[HttpGet("products")]
 		public async Task<IActionResult> GetCategoryWithProducts() =>
