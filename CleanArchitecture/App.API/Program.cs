@@ -1,4 +1,6 @@
+using App.Application.Contracts.Caching;
 using App.Application.Extensions;
+using App.Caching;
 using App.Persistance.Extensions;
 using CleanApp.API.ExceptionHandler;
 using CleanApp.API.Filters;
@@ -17,6 +19,8 @@ builder.Services.AddRepositories(builder.Configuration).AddServices(builder.Conf
 builder.Services.AddScoped(typeof(NotFoundFilter<,>));
 builder.Services.AddExceptionHandler<CriticalExceptionHandler>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddMemoryCache();
+builder.Services.AddSingleton<ICacheService, CacheService>();	
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
